@@ -1,0 +1,29 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Главная";
+}
+
+<h1>Добро пожаловать!</h1>
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <p>Привет, <strong>@User.Identity.Name</strong>!</p>
+
+    <form method="post" asp-page="/Account/Logout">
+        <button type="submit" class="btn btn-secondary">Выйти</button>
+    </form>
+
+    <hr />
+    <a asp-page="/Tasks/Index" class="btn btn-primary">Мои задачи</a>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-page="/Admin/Index" class="btn btn-warning">Админ-панель</a>
+    }
+}
+else
+{
+    <a asp-page="/Account/Login" class="btn btn-primary">Войти</a>
+    <a asp-page="/Account/Register" class="btn btn-outline-primary">Зарегистрироваться</a>
+}

@@ -1,0 +1,55 @@
+@page
+@model TodoSecure.Pages.Tasks.IndexModel
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Antiforgery
+@inject IAuthorizationService AuthorizationService
+@inject IAntiforgery Antiforgery
+@{
+    ViewData["Title"] = "Задачи";
+}
+
+<h2>Список задач</h2>
+
+<meta name="csrf-token" content="@Antiforgery.GetAndStoreTokens(HttpContext).RequestToken" />
+
+<a asp-page="Create" class="btn btn-success mb-3">Создать задачу</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Заголовок</th>
+            <th>Описание</th>
+            <th>Выполнено</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var task in Model.Tasks)
+    {
+        var canEdit = (await AuthorizationService.AuthorizeAsync(User, task, "CanEditTask")).Succeeded;
+        <tr>
+            <td>@task.Title</td>
+            <td>@task.Description</td>
+            <td>@(task.IsCompleted ? "Да" : "Нет")</td>
+            <td>
+                @if (canEdit)
+                {
+                    <a asp-page="Edit" asp-route-id="@task.Id" class="btn btn-sm btn-primary">Редактировать</a>
+
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@task.Id"
+                          style="display:inline" onsubmit="return confirm('Удалить?');">
+                        <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
+                    </form>
+
+                    <button type="button" class="btn btn-sm btn-success mark-done"
+                            data-id="@task.Id">Отметить выполненной</button>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="~/js/tasks.js"></script>
+}

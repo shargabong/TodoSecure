@@ -1,0 +1,21 @@
+@page
+@model TodoSecure.Pages.Account.LoginModel
+@{ ViewData["Title"] = "Вход"; }
+
+<h2>Вход</h2>
+
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Input.Email"></label>
+        <input asp-for="Input.Email" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Input.Password"></label>
+        <input asp-for="Input.Password" type="password" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Войти</button>
+</form>
